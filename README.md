@@ -3,9 +3,7 @@ Meant for use with the discord chat program available here: [Discord](https://di
 **Requires**
 	* [Rapptz's discord python API](https://github.com/Rapptz/discord.py)
 		* Note: can be installed by running the following command as root:
-		
 		```python3 -m pip install -U discord.py```
-		
 		**See official documentation for further customization.*
 
 **Usage**
