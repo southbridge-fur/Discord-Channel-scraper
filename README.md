@@ -15,6 +15,11 @@ Meant for use with the discord chat program available here: [Discord](https://di
 4. If successful, the file should be saved in the directory you ran the script in as <channel name>.txt
 	* Note: This works with both server channels and private channels, however private conversions will save under the filename 'None.txt', while everything else will save under the name of the channel.
 
+**Current Issues**
+
+- [ ]: On_ready fails for some unknown reason (probably asyncio related).
+	Project is on hold in the mean time.
+	
 **Future plans**
 
 - [ ]: Solve the 2FAuth issue.
