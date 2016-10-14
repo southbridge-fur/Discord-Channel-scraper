@@ -19,6 +19,6 @@ Meant for use with the discord chat program available here: [Discord](https://di
 
 - [ ]: Solve the 2FAuth issue.
 - [ ]: More robust than the hacked-together mess it currently is
-- [ ]: *Quiet mode* - doesn't require messages
-- [ ]: Command line arguments
+- [x]: *Quiet mode* - doesn't require messages
+- [x]: Command line arguments
 - [ ]: Remake discord API in C so it works more than half the time.
