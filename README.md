@@ -20,7 +20,7 @@ usage: scrape-logs.py [-h] [--username USERNAME] [--flag FLAG] [--quiet]
                       [--server SERVER] [--channel CHANNEL] [--limit LIMIT]
                       [--output OUTPUT] [--logging {10,20,30,40,50}]
 
-Scrapes the logs from a Discord channel.
+Scrapes messages from a Discord channel.
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -47,9 +47,9 @@ optional arguments:
   --limit LIMIT, -l LIMIT
                         Number of messages to save. Default is 1000000
   --output OUTPUT, -o OUTPUT
-                        Outputs all logs into a single file. If not specified,
-                        logs are saved under the format: <server
-                        name>-<channel name>.txt.
+                        Outputs all messages into a single file. If not
+                        specified, messages are saved under the format:
+                        <channel name>.txt.
   --logging {10,20,30,40,50}
                         Change the logging level. Defaults to 20, info.
 ```
