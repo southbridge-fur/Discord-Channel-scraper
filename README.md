@@ -15,7 +15,7 @@ This simple script logs in the user and scrapes up to `--limit` messages from a 
 ```
 $ python3.5 scrape-logs.py --help
 ```
-
+```
 usage: scrape-logs.py [-h] [--username USERNAME] [--flag FLAG] [--quiet]
                       [--server SERVER] [--channel CHANNEL] [--limit LIMIT]
                       [--output OUTPUT] [--logging {10,20,30,40,50}]
