@@ -6,7 +6,7 @@ This simple script logs in the user and scrapes up to `--limit` messages from a 
 - [Rapptz's discord python API](https://github.com/Rapptz/discord.py)
   - Available through pip:
   ```bash
-  pip3 install -U discord.py`
+  pip3 install -U discord.py
   ```
   **See official documentation for further installation instructions**
 
