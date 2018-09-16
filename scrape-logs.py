@@ -15,7 +15,7 @@ logging.basicConfig(
 log = logging.getLogger(__name__)
 
 
-parser = argparse.ArgumentParser(description='Scrapes the logs from a Discord channel.')
+parser = argparse.ArgumentParser(description='Scrapes messages from a Discord channel.')
 parser.add_argument('--username','-u', action='store', help='Username to login under. If not specified, username will be prompted for.')
 #parser.add_argument('--password','-p', action='store', help='Password to login under. If not specified, password will be prompted for.')
 parser.add_argument('--flag','-f', action='store', default="!yank", help='An alternative to specifing the server and channel, specify a piece of regex which when matched against a message sent by the target user, will trigger scraping of the channel the message was posted in. Useful for private messages and private chats. Default value is "!yank", activates by default if no server is specified.')
@@ -23,7 +23,7 @@ parser.add_argument('--quiet','-q', action='store_true', help='Supress messages 
 parser.add_argument('--server','--guild','-s', action='store', help='Discord server name to scrape from (user must be a member of the server and have history privileges). This field is case sensitive. If channel is not specified the entire server will be scraped.')
 parser.add_argument('--channel','-c', action='store', help='Discord channel name to scrape from (user must have history privileges for the particular channel). This field is case sensitive.')
 parser.add_argument('--limit','-l', action='store', default=1000000, type=int, help='Number of messages to save. Default is 1000000')
-parser.add_argument('--output','-o', action='store', help="Outputs all logs into a single file. If not specified, logs are saved under the format: <server name>-<channel name>.txt.") 
+parser.add_argument('--output','-o', action='store', help="Outputs all messages into a single file. If not specified, messages are saved under the format: <channel name>.txt.") 
 parser.add_argument('--logging', action='store', choices=[10,20,30,40,50], default=20, help='Change the logging level. Defaults to 20, info.')
 
 args = parser.parse_args()
