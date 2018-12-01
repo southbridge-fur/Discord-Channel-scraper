@@ -1,9 +1,11 @@
 #!/usr/bin/python
 import json
+import os
 import discord
 import getpass
 import argparse
 import logging
+import requests
 
 logging.basicConfig(
     level="WARNING",
@@ -44,6 +46,7 @@ parser.add_argument('--output', '-o', action='store', help="Outputs all messages
 parser.add_argument('--logging', action='store', choices=[10, 20, 30, 40, 50], default=20, help='Change the logging '
                                                                                                 'level. Defaults to 20, info.')
 parser.add_argument('--format', '-F', action='store', default="plain", type=str, help='Message format (plain|json)')
+parser.add_argument('--dl_attachments', '-d', action='store_true', help='Download attachments')
 
 args = parser.parse_args()
 
@@ -56,6 +59,23 @@ if not args.username:
 password = getpass.getpass("Password for user {0}: ".format(args.username))
 
 client = discord.Client()
+
+
+def download_attachment(attachment, channel):
+
+    if not os.path.exists("./attachments"):
+        os.mkdir("./attachments")
+    if not os.path.exists("./attachments/" + channel):
+        os.mkdir("./attachments/" + channel)
+
+    r = requests.get(attachment["url"], timeout=30, stream=True)
+
+    if r.status_code == 200:
+        filename = "./attachments/{}/{}_{}".format(channel, attachment["id"], attachment["filename"])
+
+        with open(filename, "wb") as out:
+            for chunk in r.iter_content(4096):
+                out.write(chunk)
 
 
 def save_line(out, message):
@@ -94,6 +114,9 @@ async def get_logs(channel):
         with open("{0}.txt".format(channel.name), 'w') as f:
             async for line in client.logs_from(channel, limit=args.limit):
                 save_line(f, line)
+                if args.dl_attachments:
+                    for a in line.attachments:
+                        download_attachment(a, line.channel.name)
         if not args.quiet:
             await client.send_message(channel, 'The messages for this channel have been saved.')
         log.info("Messages for channel {0} finished downloading".format(channel.name))
