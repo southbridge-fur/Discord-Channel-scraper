@@ -27,11 +27,11 @@ parser.add_argument('--flag', '-f', action='store', default="!yank", help='An al
                                                                           ' Default value is "!yank", activates by'
                                                                           ' default if no server is specified.')
 parser.add_argument('--quiet', '-q', action='store_true', help='Suppress messages in Discord')
-parser.add_argument('--server', '--guild','-s', action='store', help='Discord server name to scrape from '
-                                                                     '(user must be a member of the server and'
-                                                                     ' have history privileges). This field is case'
-                                                                     ' sensitive. If channel is not specified the '
-                                                                     'entire server will be scraped.')
+parser.add_argument('--server', '--guild', '-s', action='store', help='Discord server name to scrape from '
+                                                                      '(user must be a member of the server and'
+                                                                      ' have history privileges). This field is case'
+                                                                      ' sensitive. If channel is not specified the '
+                                                                      'entire server will be scraped.')
 parser.add_argument('--channel', '-c', action='store', help='Discord channel name to scrape from '
                                                             '(user must have history privileges for the particular'
                                                             ' channel). This field is case sensitive.')
@@ -69,7 +69,7 @@ async def get_logs(channel):
                     except:
                         continue
                 try:
-                    f.write('{0}: {1}\n'.format(line.author.name, line.content)) # line is of the message type
+                    f.write('{0}: {1}\n'.format(line.author.name, line.content))  # line is of the message type
                 except:
                     continue
         if not args.quiet:
@@ -77,8 +77,8 @@ async def get_logs(channel):
         log.info("Messages for channel {0} finished downloading".format(channel.name))
     except Exception as e:
         if not args.quiet:
-            await client.send_message(channel, 'Failed saving logs: {}'.format(e.message))
-        log.error("Error while downloading channel {0}: {1}".format(channel.name, e.message))
+            await client.send_message(channel, 'Failed saving logs: {}'.format(str(e)))
+        log.error("Error while downloading channel {0}: {1}".format(channel.name, str(e)))
 
 
 # Strangely, this will work once we are logged in
@@ -114,12 +114,13 @@ async def on_ready():
         await client.logout()
     elif args.server:
         log.info("Downloading messages for all channels in server {0}".format(args.server))
-        for channel in server.channels:
+        channels = [c for c in client.get_all_channels() if c.server.name == args.server]
+        for channel in channels:
             await get_logs(channel)
         await client.logout()
     else:
         log.info('Entering flag mode with flag "{0}"'.format(args.flag))
-        
+
 try:
     log.info("Logging in...")
     client.run(args.username, password)
