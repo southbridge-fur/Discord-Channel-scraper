@@ -53,6 +53,7 @@ parser.add_argument('--logging', action='store', choices=[10, 20, 30, 40, 50], d
 parser.add_argument('--format', '-F', action='store', default="plain", type=str, help='Message format (plain|json)')
 parser.add_argument('--dl_attachments', '-a', action='store_true', help='Download attachments')
 parser.add_argument('--dl_emoji', '-e', action='store_true', help='Download emoji')
+parser.add_argument('--skip_messages', '-S', action='store_true', help='Skip logging messages')
 
 args = parser.parse_args()
 
@@ -137,13 +138,17 @@ async def get_logs(channel):
         log.info("Getting the logs for channel {0}".format(channel.name))
         with open("{0}.txt".format(channel.name), 'w') as f:
             async for line in client.logs_from(channel, limit=args.limit):
-                save_line(f, line)
+                if not args.skip_messages:
+                    save_line(f, line)
                 if args.dl_attachments:
                     for a in line.attachments:
                         download_attachment(a, line.channel.name)
                 if args.dl_emoji:
                     for e in EMOJI_RE.findall(line.content):
                         download_emoji(e)
+                    for r in line.reactions:
+                        if not isinstance(r.emoji, str):
+                            download_emoji((r.emoji.name, r.emoji.id))
 
         if not args.quiet:
             await client.send_message(channel, 'The messages for this channel have been saved.')
