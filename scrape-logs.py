@@ -73,11 +73,11 @@ async def get_logs(channel):
                 except:
                     continue
         if not args.quiet:
-            await client.send_message(channel,'The messages for this channel have been saved.')
+            await client.send_message(channel, 'The messages for this channel have been saved.')
         log.info("Messages for channel {0} finished downloading".format(channel.name))
     except Exception as e:
         if not args.quiet:
-            await client.send_message(channel,'Failed saving logs: {}'.format(e.message))
+            await client.send_message(channel, 'Failed saving logs: {}'.format(e.message))
         log.error("Error while downloading channel {0}: {1}".format(channel.name, e.message))
 
 
