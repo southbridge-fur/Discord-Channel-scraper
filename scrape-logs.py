@@ -1,11 +1,16 @@
 #!/usr/bin/python
 import json
 import os
+import pprint
+import re
 import discord
 import getpass
 import argparse
 import logging
 import requests
+
+EMOJI_RE = re.compile("<:([^>]+):([0-9]{18})>")
+
 
 logging.basicConfig(
     level="WARNING",
@@ -46,7 +51,8 @@ parser.add_argument('--output', '-o', action='store', help="Outputs all messages
 parser.add_argument('--logging', action='store', choices=[10, 20, 30, 40, 50], default=20, help='Change the logging '
                                                                                                 'level. Defaults to 20, info.')
 parser.add_argument('--format', '-F', action='store', default="plain", type=str, help='Message format (plain|json)')
-parser.add_argument('--dl_attachments', '-d', action='store_true', help='Download attachments')
+parser.add_argument('--dl_attachments', '-a', action='store_true', help='Download attachments')
+parser.add_argument('--dl_emoji', '-e', action='store_true', help='Download emoji')
 
 args = parser.parse_args()
 
@@ -59,6 +65,24 @@ if not args.username:
 password = getpass.getpass("Password for user {0}: ".format(args.username))
 
 client = discord.Client()
+
+
+def download_emoji(emoji):
+
+    if not os.path.exists("./emoji"):
+        os.mkdir("./emoji")
+
+    url = "https://cdn.discordapp.com/emojis/{}.png?v=1".format(emoji[1])
+    filename = "./emoji/{}_{}.png".format(emoji[1], emoji[0])
+
+    if os.path.exists(filename):
+        return
+
+    r = requests.get(url, timeout=30)
+
+    if r.status_code == 200:
+        with open(filename, "wb") as out:
+            out.write(r.content)
 
 
 def download_attachment(attachment, channel):
@@ -117,6 +141,10 @@ async def get_logs(channel):
                 if args.dl_attachments:
                     for a in line.attachments:
                         download_attachment(a, line.channel.name)
+                if args.dl_emoji:
+                    for e in EMOJI_RE.findall(line.content):
+                        download_emoji(e)
+
         if not args.quiet:
             await client.send_message(channel, 'The messages for this channel have been saved.')
         log.info("Messages for channel {0} finished downloading".format(channel.name))
