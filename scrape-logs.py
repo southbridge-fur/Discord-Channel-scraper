@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import json
 import discord
 import getpass
 import argparse
@@ -42,6 +43,7 @@ parser.add_argument('--output', '-o', action='store', help="Outputs all messages
                                                            " <channel name>.txt.")
 parser.add_argument('--logging', action='store', choices=[10, 20, 30, 40, 50], default=20, help='Change the logging '
                                                                                                 'level. Defaults to 20, info.')
+parser.add_argument('--format', '-F', action='store', default="plain", type=str, help='Message format (plain|json)')
 
 args = parser.parse_args()
 
@@ -56,6 +58,34 @@ password = getpass.getpass("Password for user {0}: ".format(args.username))
 client = discord.Client()
 
 
+def save_line(out, message):
+
+    lines = []
+
+    if args.format == "plain":
+        for i in message.attachments:
+            lines.append('{0}::file:{1}'.format(message.author.name, i['url']))
+
+        lines.append('{0}: {1}'.format(message.author.name, message.content))
+
+    elif args.format == "json":
+
+        msg_obj = dict()
+
+        msg_obj["author"] = {
+            "name": message.author.name,
+            "id": message.author.id,
+        }
+        msg_obj["content"] = message.content
+        msg_obj["timestamp"] = message.timestamp.timestamp()
+        msg_obj["attachments"] = [{"url": a["url"], "id": a["id"], "filename": a["filename"]}
+                                  for a in message.attachments]
+        lines.append(json.dumps(msg_obj))
+
+    for line in lines:
+        out.write(line + "\n")
+
+
 async def get_logs(channel):
     try:
         if not args.quiet:
@@ -63,15 +93,7 @@ async def get_logs(channel):
         log.info("Getting the logs for channel {0}".format(channel.name))
         with open("{0}.txt".format(channel.name), 'w') as f:
             async for line in client.logs_from(channel, limit=args.limit):
-                for i in line.attachments:
-                    try:
-                        f.write('{0}::file:{1}\n'.format(line.author.name, i['url']))
-                    except:
-                        continue
-                try:
-                    f.write('{0}: {1}\n'.format(line.author.name, line.content))  # line is of the message type
-                except:
-                    continue
+                save_line(f, line)
         if not args.quiet:
             await client.send_message(channel, 'The messages for this channel have been saved.')
         log.info("Messages for channel {0} finished downloading".format(channel.name))
@@ -127,4 +149,4 @@ try:
 except KeyboardInterrupt:
     log.info("Logging out...")
 except Exception as e:
-    log.error(e.message)
+    log.error(str(e))
