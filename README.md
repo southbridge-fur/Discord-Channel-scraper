@@ -19,6 +19,8 @@ $ python3.5 scrape-logs.py --help
 usage: scrape-logs.py [-h] [--username USERNAME] [--flag FLAG] [--quiet]
                       [--server SERVER] [--channel CHANNEL] [--limit LIMIT]
                       [--output OUTPUT] [--logging {10,20,30,40,50}]
+                      [--format FORMAT] [--dl_attachments] [--dl_emoji]
+                      [--skip_messages]
 
 Scrapes messages from a Discord channel.
 
@@ -27,14 +29,14 @@ optional arguments:
   --username USERNAME, -u USERNAME
                         Username to login under. If not specified, username
                         will be prompted for.
-  --flag FLAG, -f FLAG  An alternative to specifing the server and channel,
+  --flag FLAG, -f FLAG  An alternative to specifying the server and channel,
                         specify a piece of regex which when matched against a
                         message sent by the target user, will trigger scraping
                         of the channel the message was posted in. Useful for
                         private messages and private chats. Default value is
                         "!yank", activates by default if no server is
                         specified.
-  --quiet, -q           Supress messages in Discord
+  --quiet, -q           Suppress messages in Discord
   --server SERVER, --guild SERVER, -s SERVER
                         Discord server name to scrape from (user must be a
                         member of the server and have history privileges).
@@ -52,6 +54,11 @@ optional arguments:
                         <channel name>.txt.
   --logging {10,20,30,40,50}
                         Change the logging level. Defaults to 20, info.
+  --format FORMAT, -F FORMAT
+                        Message format (plain|json)
+  --dl_attachments, -a  Download attachments
+  --dl_emoji, -e        Download emoji
+  --skip_messages, -S   Skip logging messages
 ```
 
 ## Future plans
